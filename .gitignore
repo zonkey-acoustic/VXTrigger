@@ -10,3 +10,4 @@ dist/
 
 ## Build
 *.nupkg
+.claude
