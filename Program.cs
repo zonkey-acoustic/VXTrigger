@@ -1,7 +1,7 @@
 using System.IO;
-using ShotTrigger.Services;
+using VXTrigger.Services;
 
-namespace ShotTrigger;
+namespace VXTrigger;
 
 public static class Program
 {

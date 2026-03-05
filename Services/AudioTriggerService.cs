@@ -1,6 +1,6 @@
 using NAudio.Wave;
 
-namespace ShotTrigger.Services;
+namespace VXTrigger.Services;
 
 public class AudioTriggerService : IDisposable
 {

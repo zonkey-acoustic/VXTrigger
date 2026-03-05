@@ -1,12 +1,12 @@
 using System.Drawing;
 using System.Runtime.InteropServices;
 using System.Windows;
-using ShotTrigger.Services;
-using ShotTrigger.Views;
+using VXTrigger.Services;
+using VXTrigger.Views;
 using Application = System.Windows.Application;
 using Forms = System.Windows.Forms;
 
-namespace ShotTrigger;
+namespace VXTrigger;
 
 public partial class App : Application
 {
@@ -49,7 +49,7 @@ public partial class App : Application
         {
             Icon = CreateTrayIcon(Color.Gray),
             Visible = true,
-            Text = "Shot Trigger"
+            Text = "VX Trigger"
         };
 
         var menu = new Forms.ContextMenuStrip();
@@ -105,7 +105,7 @@ public partial class App : Application
             SetTrayIcon(Color.LimeGreen);
             _toggleItem.Text = "Stop Monitoring";
 
-            var tooltip = $"Shot Trigger - Monitoring";
+            var tooltip = $"VX Trigger - Monitoring";
             if (_orchestrator.ShotCount > 0)
                 tooltip += $"\nShots: {_orchestrator.ShotCount}";
             if (_orchestrator.LastShotTime.HasValue)
@@ -117,7 +117,7 @@ public partial class App : Application
             var hasConfig = _orchestrator.Settings.AudioTriggerEnabled || _orchestrator.Settings.NetworkTriggerEnabled;
             SetTrayIcon(hasConfig ? Color.Yellow : Color.Gray);
             _toggleItem.Text = "Start Monitoring";
-            _trayIcon.Text = "Shot Trigger - Stopped";
+            _trayIcon.Text = "VX Trigger - Stopped";
         }
     }
 

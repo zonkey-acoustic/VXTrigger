@@ -1,4 +1,4 @@
-namespace ShotTrigger.Services;
+namespace VXTrigger.Services;
 
 public class TriggerOrchestrator : IDisposable
 {

@@ -7,12 +7,12 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <UseWPF>true</UseWPF>
     <UseWindowsForms>true</UseWindowsForms>
-    <RootNamespace>ShotTrigger</RootNamespace>
-    <AssemblyName>ShotTrigger</AssemblyName>
+    <RootNamespace>VXTrigger</RootNamespace>
+    <AssemblyName>VXTrigger</AssemblyName>
 
     <!-- Version Information -->
     <Version>1.0.0</Version>
-    <Product>ShotTrigger</Product>
+    <Product>VXTrigger</Product>
     <Description>Golf shot trigger for swing recording software</Description>
 
     <!-- Publishing Configuration -->
@@ -21,6 +21,7 @@
     <RuntimeIdentifier>win-x64</RuntimeIdentifier>
     <IncludeNativeLibrariesForSelfExtract>true</IncludeNativeLibrariesForSelfExtract>
     <EnableCompressionInSingleFile>true</EnableCompressionInSingleFile>
+    <ApplicationIcon>app.ico</ApplicationIcon>
   </PropertyGroup>
 
   <ItemGroup>
@@ -30,7 +31,7 @@
 
   <!-- Use custom Program.Main instead of auto-generated entry point -->
   <PropertyGroup>
-    <StartupObject>ShotTrigger.Program</StartupObject>
+    <StartupObject>VXTrigger.Program</StartupObject>
     <EnableDefaultApplicationDefinition>false</EnableDefaultApplicationDefinition>
   </PropertyGroup>
   <ItemGroup>

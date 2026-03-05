@@ -4,7 +4,7 @@ using System.Windows.Interop;
 using System.Windows.Media;
 using Color = System.Windows.Media.Color;
 
-namespace ShotTrigger.Views;
+namespace VXTrigger.Views;
 
 public enum MessageDialogType
 {
