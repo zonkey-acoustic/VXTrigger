@@ -4,23 +4,23 @@ A lightweight Windows system tray application that monitors ProTee United shot d
 
 ## How It Works
 
-ProTee United writes a timestamped subdirectory to `%APPDATA%\ProTeeUnited\Shots` for each shot. VXTrigger watches that directory using a `FileSystemWatcher` and fires a configured trigger the moment a new shot folder appears.
+ProTee Labs writes a timestamped subdirectory to `%APPDATA%\Roaming\ProTeeUnited\Shots` for each shot. VXTrigger watches that directory using a `FileSystemWatcher` and fires a configured trigger the moment a new shot folder appears.
 
 ## Trigger Types
 
-**Audio Trigger** — Plays a synthetic golf impact sound through a selected audio output device. The sound envelope (frequency, noise/tone decay, mix, duration) is configurable to match your launch monitor's timing. Have tested with SwingCatalyst.
+**Audio Trigger** — Plays a synthetic golf impact sound through a selected audio output device. The sound envelope (frequency, noise/tone decay, mix, duration) is configurable. Have tested with SwingCatalyst.
 
-Use [VB-CABLE](https://vb-audio.com/Cable/index.htm)
+Download and install: [VB-CABLE](https://vb-audio.com/Cable/index.htm)
 
 1. Select CABLE Input (VB-Audio Virtual Cable) as the output source in VXTrigger.
 2. In your recording software, set the trigger input to CABLE Output (VB-Audio Virtual Cable). Adjust the threshold so the test sound triggers a swing recording.
 
-**Network Trigger (UDP)** — Sends a UDP packet to a configured host and port. Compatible with Kinovea 2025.1 and any other recording software that supports UDP trigger input.
+**Network Trigger (UDP)** — Sends a UDP packet to a configured host and port. Compatible with [Kinovea 2025.1](https://www.kinovea.org/) and any other recording software that supports UDP trigger input.
 
 ## Requirements
 
 - Windows 10/11
-- [ProTee Labs](https://www.proteegolf.com/) launch monitor software
+- [ProTee Labs](https://proteelaunchmonitors.com/) launch monitor software
 
 ## Installation
 
@@ -32,7 +32,7 @@ The app will open the configuration window on first launch if no trigger has bee
 
 1. Run `VXTrigger.exe` — a colored circle appears in the system tray
 2. Double-click the tray icon (or right-click → **Configure...**) to open settings
-3. Set the **Shots directory** (default: `%APPDATA%\ProTeeUnited\Shots`)
+3. Set the **Shots directory** (default: `%APPDATA%\Roaming\ProTeeUnited\Shots`)
 4. Choose a trigger type and configure it, then click **Save**
 5. The tray icon turns green when monitoring is active
 
@@ -46,7 +46,7 @@ The app will open the configuration window on first launch if no trigger has bee
 
 ### Settings
 
-Settings are saved to `Documents\VXTrigger\settings.json`. If you previously used SimLogger, your audio and network trigger settings are imported automatically on first launch.
+Settings are saved to `Documents\VXTrigger\settings.json`
 
 ## Building
 
