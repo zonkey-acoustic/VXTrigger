@@ -8,9 +8,14 @@ ProTee United writes a timestamped subdirectory to `%APPDATA%\ProTeeUnited\Shots
 
 ## Trigger Types
 
-**Audio Trigger** — Plays a synthetic golf impact sound through a selected audio output device. The sound envelope (frequency, noise/tone decay, mix, duration) is configurable to match your launch monitor's timing.
+**Audio Trigger** — Plays a synthetic golf impact sound through a selected audio output device. The sound envelope (frequency, noise/tone decay, mix, duration) is configurable to match your launch monitor's timing. Have tested with SwingCatalyst.
 
-**Network Trigger (UDP)** — Sends a UDP packet to a configured host and port. Compatible with Kinovea, Swing Catalyst, and any other recording software that supports UDP trigger input.
+Use [VB-CABLE](https://vb-audio.com/Cable/index.htm)
+
+1. Select CABLE Input (VB-Audio Virtual Cable) as the output source in VXTrigger.
+2. In your recording software, set the trigger input to CABLE Output (VB-Audio Virtual Cable). Adjust the threshold so the test sound triggers a swing recording.
+
+**Network Trigger (UDP)** — Sends a UDP packet to a configured host and port. Compatible with Kinovea 2025.1 and any other recording software that supports UDP trigger input.
 
 ## Requirements
 
