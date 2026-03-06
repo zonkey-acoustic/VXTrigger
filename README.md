@@ -1,6 +1,6 @@
 # VXTrigger
 
-A lightweight Windows system tray application that monitors ProTee Labs shot data and fires triggers to notify swing recording software when a shot is detected.
+A lightweight Windows system tray application that monitors ProTee Labs shot data and fires triggers to notify swing recording software when a shot is detected or backup ProTee Labs swing recordings.
 
 ## How It Works
 
