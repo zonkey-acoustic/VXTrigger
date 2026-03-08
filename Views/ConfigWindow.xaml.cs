@@ -34,7 +34,6 @@ public partial class ConfigWindow : Window
 
         _orchestrator.StatusChanged += OnOrchestratorStatusChanged;
         _orchestrator.ShotFired += OnOrchestratorShotFired;
-        _orchestrator.SwingVideo.StatusChanged += OnSwingVideoStatusChanged;
         Closed += OnWindowClosed;
 
         _isInitialized = true;
@@ -45,13 +44,10 @@ public partial class ConfigWindow : Window
     private void OnOrchestratorStatusChanged(object? sender, string status) => Dispatcher.Invoke(UpdateStatus);
     private void OnOrchestratorShotFired(object? sender, EventArgs e) => Dispatcher.Invoke(UpdateStatus);
 
-    private void OnSwingVideoStatusChanged(object? sender, string status) => Dispatcher.Invoke(UpdateStatus);
-
     private void OnWindowClosed(object? sender, EventArgs e)
     {
         _orchestrator.StatusChanged -= OnOrchestratorStatusChanged;
         _orchestrator.ShotFired -= OnOrchestratorShotFired;
-        _orchestrator.SwingVideo.StatusChanged -= OnSwingVideoStatusChanged;
     }
 
     private void LoadSettingsToUI()
@@ -68,9 +64,7 @@ public partial class ConfigWindow : Window
             AudioDeviceCombo.SelectedIndex = settings.SelectedDeviceIndex;
 
         // Trigger type
-        if (settings.SwingVideoEnabled)
-            SwingVideoRadio.IsChecked = true;
-        else if (settings.NetworkTriggerEnabled)
+        if (settings.NetworkTriggerEnabled)
             NetworkRadio.IsChecked = true;
         else
             AudioRadio.IsChecked = true;
@@ -79,10 +73,6 @@ public partial class ConfigWindow : Window
         NetworkHostTextBox.Text = settings.NetworkTriggerHost;
         if (settings.NetworkTriggerPort > 0)
             NetworkPortTextBox.Text = settings.NetworkTriggerPort.ToString();
-
-        // Swing video
-        SwingVideoSourceTextBox.Text = settings.SwingVideoSourcePath;
-        SwingVideoDestTextBox.Text = settings.SwingVideoDestinationPath;
 
         // Tone sliders
         FrequencySlider.Value = settings.ToneFrequencyHz;
@@ -129,12 +119,11 @@ public partial class ConfigWindow : Window
 
     private void UpdateVisibility()
     {
-        if (AudioConfigGroup == null || NetworkConfigGroup == null || SwingVideoConfigGroup == null)
+        if (AudioConfigGroup == null || NetworkConfigGroup == null)
             return;
 
         AudioConfigGroup.Visibility = AudioRadio.IsChecked == true ? Visibility.Visible : Visibility.Collapsed;
         NetworkConfigGroup.Visibility = NetworkRadio.IsChecked == true ? Visibility.Visible : Visibility.Collapsed;
-        SwingVideoConfigGroup.Visibility = SwingVideoRadio.IsChecked == true ? Visibility.Visible : Visibility.Collapsed;
     }
 
     private void BrowseButton_Click(object sender, RoutedEventArgs e)
@@ -189,32 +178,6 @@ public partial class ConfigWindow : Window
         MessageDialog.Show(this, "Test", $"Test packet sent to {host}:{port}", MessageDialogType.Information);
     }
 
-    private void BrowseSwingSourceButton_Click(object sender, RoutedEventArgs e)
-    {
-        var dialog = new System.Windows.Forms.FolderBrowserDialog
-        {
-            Description = "Select the ProTee SwingVideos directory",
-            UseDescriptionForTitle = true,
-            SelectedPath = SwingVideoSourceTextBox.Text
-        };
-
-        if (dialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
-            SwingVideoSourceTextBox.Text = dialog.SelectedPath;
-    }
-
-    private void BrowseSwingDestButton_Click(object sender, RoutedEventArgs e)
-    {
-        var dialog = new System.Windows.Forms.FolderBrowserDialog
-        {
-            Description = "Select destination folder for swing video copies",
-            UseDescriptionForTitle = true,
-            SelectedPath = SwingVideoDestTextBox.Text
-        };
-
-        if (dialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
-            SwingVideoDestTextBox.Text = dialog.SelectedPath;
-    }
-
     private void SaveButton_Click(object sender, RoutedEventArgs e)
     {
         var settings = _orchestrator.Settings;
@@ -231,7 +194,6 @@ public partial class ConfigWindow : Window
         // Reset all trigger types
         settings.AudioTriggerEnabled = false;
         settings.NetworkTriggerEnabled = false;
-        settings.SwingVideoEnabled = false;
 
         if (AudioRadio.IsChecked == true)
         {
@@ -265,20 +227,6 @@ public partial class ConfigWindow : Window
             settings.NetworkTriggerPort = port;
             settings.NetworkTriggerHost = host;
         }
-        else if (SwingVideoRadio.IsChecked == true)
-        {
-            var destPath = SwingVideoDestTextBox.Text.Trim();
-            if (string.IsNullOrEmpty(destPath))
-            {
-                MessageDialog.Show(this, "Validation Error", "Please select a destination folder for swing videos.", MessageDialogType.Warning);
-                return;
-            }
-
-            settings.SwingVideoEnabled = true;
-            settings.SwingVideoSourcePath = SwingVideoSourceTextBox.Text.Trim();
-            settings.SwingVideoDestinationPath = destPath;
-        }
-
         _orchestrator.SaveSettings();
 
         // Restart monitoring with new settings
