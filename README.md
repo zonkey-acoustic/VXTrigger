@@ -48,27 +48,3 @@ The app will open the configuration window on first launch if no trigger has bee
 
 Settings are saved to `Documents\vx-trigger\settings.json`
 
-## Building
-
-Requires [.NET 8 SDK](https://dotnet.microsoft.com/download).
-
-```powershell
-.\build.ps1
-```
-
-Output: `dist\vx-trigger.exe`
-
-## Project Structure
-
-```
-vx-trigger/
-├── Services/
-│   ├── ShotFolderWatcher.cs      # FileSystemWatcher on ProTee Shots directory
-│   ├── TriggerOrchestrator.cs    # Wires detection → triggers with debounce
-│   ├── AudioTriggerService.cs    # Golf impact sound via NAudio
-│   ├── NetworkTriggerService.cs  # UDP trigger packet sender
-│   └── TriggerSettings.cs        # Settings model + JSON persistence
-└── Views/
-    ├── ConfigWindow.xaml         # Configuration UI
-    └── MessageDialog.xaml        # Info/error dialogs
-```
