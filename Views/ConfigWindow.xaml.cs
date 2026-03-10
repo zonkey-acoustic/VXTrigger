@@ -3,9 +3,9 @@ using System.Text.RegularExpressions;
 using System.Windows;
 using System.Windows.Input;
 using System.Windows.Interop;
-using VXTrigger.Services;
+using VxTrigger.Services;
 
-namespace VXTrigger.Views;
+namespace VxTrigger.Views;
 
 public partial class ConfigWindow : Window
 {

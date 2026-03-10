@@ -1,7 +1,7 @@
 using System.IO;
 using System.Text.Json;
 
-namespace VXTrigger.Services;
+namespace VxTrigger.Services;
 
 public class TriggerSettings
 {
@@ -29,7 +29,7 @@ public class TriggerSettings
 
     private static string SettingsDir => Path.Combine(
         Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments),
-        "VXTrigger");
+        "vx-trigger");
 
     private static string SettingsPath => Path.Combine(SettingsDir, "settings.json");
 

@@ -1,4 +1,4 @@
-# VXTrigger Build Script
+# vx-trigger Build Script
 # Builds a self-contained single-file executable for distribution
 
 param(
@@ -9,7 +9,7 @@ param(
 $ErrorActionPreference = "Stop"
 
 Write-Host "========================================" -ForegroundColor Cyan
-Write-Host "  VXTrigger Build Script" -ForegroundColor Cyan
+Write-Host "  vx-trigger Build Script" -ForegroundColor Cyan
 Write-Host "========================================" -ForegroundColor Cyan
 Write-Host ""
 
@@ -41,7 +41,7 @@ if ($LASTEXITCODE -ne 0) {
 
 # Publish single-file executable
 Write-Host "[4/4] Publishing self-contained single-file executable..." -ForegroundColor Yellow
-dotnet publish VXTrigger.csproj `
+dotnet publish vx-trigger.csproj `
     -c $Configuration `
     -r win-x64 `
     --self-contained true `
@@ -63,11 +63,11 @@ Write-Host "========================================" -ForegroundColor Green
 Write-Host ""
 Write-Host "Output location: $OutputDir" -ForegroundColor White
 
-$exePath = Join-Path $OutputDir "VXTrigger.exe"
+$exePath = Join-Path $OutputDir "vx-trigger.exe"
 if (Test-Path $exePath) {
     $fileInfo = Get-Item $exePath
     $sizeMB = [math]::Round($fileInfo.Length / 1MB, 2)
-    Write-Host "Executable: VXTrigger.exe ($sizeMB MB)" -ForegroundColor White
+    Write-Host "Executable: vx-trigger.exe ($sizeMB MB)" -ForegroundColor White
 }
 
 Write-Host ""

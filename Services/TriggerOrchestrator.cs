@@ -1,4 +1,4 @@
-namespace VXTrigger.Services;
+namespace VxTrigger.Services;
 
 public class TriggerOrchestrator : IDisposable
 {

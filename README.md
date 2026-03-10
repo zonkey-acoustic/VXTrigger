@@ -1,10 +1,10 @@
-# VXTrigger
+# vx-trigger
 
 A lightweight Windows system tray application that monitors ProTee Labs shot data and fires triggers to notify swing recording software when a shot is detected.
 
 ## How It Works
 
-ProTee Labs writes a timestamped subdirectory to `%APPDATA%\Roaming\ProTeeUnited\Shots` for each shot. VXTrigger watches that directory using a `FileSystemWatcher` and fires a configured trigger the moment a new shot folder appears.
+ProTee Labs writes a timestamped subdirectory to `%APPDATA%\Roaming\ProTeeUnited\Shots` for each shot. vx-trigger watches that directory using a `FileSystemWatcher` and fires a configured trigger the moment a new shot folder appears.
 
 ## Trigger Types
 
@@ -12,7 +12,7 @@ ProTee Labs writes a timestamped subdirectory to `%APPDATA%\Roaming\ProTeeUnited
 
 Download and install: [VB-CABLE](https://vb-audio.com/Cable/index.htm)
 
-1. Select CABLE Input (VB-Audio Virtual Cable) as the output source in VXTrigger.
+1. Select CABLE Input (VB-Audio Virtual Cable) as the output source in vx-trigger.
 2. In your recording software, set the trigger input to CABLE Output (VB-Audio Virtual Cable). Adjust the threshold so the test sound triggers a swing recording.
 
 **Network Trigger (UDP)** — Sends a UDP packet to a configured host and port. Compatible with [Kinovea 2025.1](https://www.kinovea.org/) and any other recording software that supports UDP trigger input.
@@ -24,13 +24,13 @@ Download and install: [VB-CABLE](https://vb-audio.com/Cable/index.htm)
 
 ## Installation
 
-Download `VXTrigger.exe` from the [releases page](../../releases) and run it. No installer, no .NET runtime required — it's a self-contained executable.
+Download `vx-trigger.exe` from the [releases page](../../releases) and run it. No installer, no .NET runtime required — it's a self-contained executable.
 
 The app will open the configuration window on first launch if no trigger has been configured yet.
 
 ## Usage
 
-1. Run `VXTrigger.exe` — a colored circle appears in the system tray
+1. Run `vx-trigger.exe` — a colored circle appears in the system tray
 2. Double-click the tray icon (or right-click → **Configure...**) to open settings
 3. Set the **Shots directory** (default: `%APPDATA%\Roaming\ProTeeUnited\Shots`)
 4. Choose a trigger type and configure it, then click **Save**
@@ -46,7 +46,7 @@ The app will open the configuration window on first launch if no trigger has bee
 
 ### Settings
 
-Settings are saved to `Documents\VXTrigger\settings.json`
+Settings are saved to `Documents\vx-trigger\settings.json`
 
 ## Building
 
@@ -56,12 +56,12 @@ Requires [.NET 8 SDK](https://dotnet.microsoft.com/download).
 .\build.ps1
 ```
 
-Output: `dist\VXTrigger.exe`
+Output: `dist\vx-trigger.exe`
 
 ## Project Structure
 
 ```
-VXTrigger/
+vx-trigger/
 ├── Services/
 │   ├── ShotFolderWatcher.cs      # FileSystemWatcher on ProTee Shots directory
 │   ├── TriggerOrchestrator.cs    # Wires detection → triggers with debounce

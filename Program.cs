@@ -1,7 +1,7 @@
 using System.IO;
-using VXTrigger.Services;
+using VxTrigger.Services;
 
-namespace VXTrigger;
+namespace VxTrigger;
 
 public static class Program
 {

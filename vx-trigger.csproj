@@ -7,12 +7,12 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <UseWPF>true</UseWPF>
     <UseWindowsForms>true</UseWindowsForms>
-    <RootNamespace>VXTrigger</RootNamespace>
-    <AssemblyName>VXTrigger</AssemblyName>
+    <RootNamespace>VxTrigger</RootNamespace>
+    <AssemblyName>vx-trigger</AssemblyName>
 
     <!-- Version Information -->
     <Version>1.0.0</Version>
-    <Product>VXTrigger</Product>
+    <Product>vx-trigger</Product>
     <Description>Golf shot trigger for swing recording software</Description>
 
     <!-- Publishing Configuration -->
@@ -31,7 +31,7 @@
 
   <!-- Use custom Program.Main instead of auto-generated entry point -->
   <PropertyGroup>
-    <StartupObject>VXTrigger.Program</StartupObject>
+    <StartupObject>VxTrigger.Program</StartupObject>
     <EnableDefaultApplicationDefinition>false</EnableDefaultApplicationDefinition>
   </PropertyGroup>
   <ItemGroup>

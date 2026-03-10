@@ -1,6 +1,6 @@
 using System.IO;
 
-namespace VXTrigger.Services;
+namespace VxTrigger.Services;
 
 public class ShotFolderWatcher : IDisposable
 {

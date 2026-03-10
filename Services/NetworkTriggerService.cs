@@ -2,7 +2,7 @@ using System.Net;
 using System.Net.Sockets;
 using System.Text;
 
-namespace VXTrigger.Services;
+namespace VxTrigger.Services;
 
 public class NetworkTriggerService : IDisposable
 {
@@ -38,7 +38,7 @@ public class NetworkTriggerService : IDisposable
             _udpClient?.Dispose();
             _udpClient = new UdpClient();
 
-            var message = $"VXTRIGGER:{DateTime.UtcNow:O}";
+            var message = $"VX-TRIGGER:{DateTime.UtcNow:O}";
             var data = Encoding.UTF8.GetBytes(message);
 
             var endpoint = new IPEndPoint(IPAddress.Parse(host), port);
