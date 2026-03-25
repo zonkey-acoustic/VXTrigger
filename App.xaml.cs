@@ -26,11 +26,13 @@ public partial class App : Application
         _orchestrator = new TriggerOrchestrator();
         _orchestrator.StatusChanged += OnStatusChanged;
         _orchestrator.ShotFired += OnShotFired;
+        _orchestrator.ClientConnectionChanged += OnClientConnectionChanged;
 
         SetupTrayIcon();
 
         // Auto-start monitoring if a trigger is enabled
-        if (_orchestrator.Settings.AudioTriggerEnabled || _orchestrator.Settings.NetworkTriggerEnabled)
+        if (_orchestrator.Settings.AudioTriggerEnabled || _orchestrator.Settings.NetworkTriggerEnabled
+            || _orchestrator.Settings.DetectionSource == Services.ShotDetectionSource.OpenConnect)
         {
             _orchestrator.Start();
             UpdateTrayState();
@@ -102,10 +104,18 @@ public partial class App : Application
 
         if (_orchestrator.IsRunning)
         {
-            SetTrayIcon(Color.LimeGreen);
+            // OpenConnect mode: green when client connected, orange when listening
+            // Folder watcher mode: always green when running
+            if (_orchestrator.Settings.DetectionSource == Services.ShotDetectionSource.OpenConnect)
+                SetTrayIcon(_orchestrator.IsClientConnected ? Color.LimeGreen : Color.Orange);
+            else
+                SetTrayIcon(Color.LimeGreen);
+
             _toggleItem.Text = "Stop Monitoring";
 
-            var tooltip = $"vx-trigger - Monitoring";
+            var tooltip = _orchestrator.Settings.DetectionSource == Services.ShotDetectionSource.OpenConnect
+                ? $"vx-trigger - {(_orchestrator.IsClientConnected ? "Connected" : "Waiting for connection")}"
+                : $"vx-trigger - Monitoring";
             if (_orchestrator.ShotCount > 0)
                 tooltip += $"\nShots: {_orchestrator.ShotCount}";
             if (_orchestrator.LastShotTime.HasValue)
@@ -114,7 +124,8 @@ public partial class App : Application
         }
         else
         {
-            var hasConfig = _orchestrator.Settings.AudioTriggerEnabled || _orchestrator.Settings.NetworkTriggerEnabled;
+            var hasConfig = _orchestrator.Settings.AudioTriggerEnabled || _orchestrator.Settings.NetworkTriggerEnabled
+                || _orchestrator.Settings.DetectionSource == Services.ShotDetectionSource.OpenConnect;
             SetTrayIcon(hasConfig ? Color.Yellow : Color.Gray);
             _toggleItem.Text = "Start Monitoring";
             _trayIcon.Text = "vx-trigger - Stopped";
@@ -132,6 +143,14 @@ public partial class App : Application
     }
 
     private void OnShotFired(object? sender, EventArgs e)
+    {
+        Current.Dispatcher.Invoke(() =>
+        {
+            UpdateTrayState();
+        });
+    }
+
+    private void OnClientConnectionChanged(object? sender, bool connected)
     {
         Current.Dispatcher.Invoke(() =>
         {

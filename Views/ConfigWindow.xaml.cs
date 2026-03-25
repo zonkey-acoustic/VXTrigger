@@ -34,28 +34,41 @@ public partial class ConfigWindow : Window
 
         _orchestrator.StatusChanged += OnOrchestratorStatusChanged;
         _orchestrator.ShotFired += OnOrchestratorShotFired;
+        _orchestrator.ClientConnectionChanged += OnClientConnectionChanged;
         Closed += OnWindowClosed;
 
         _isInitialized = true;
         UpdateSliderDisplayValues();
         UpdateVisibility();
+        UpdateDetectionVisibility();
     }
 
     private void OnOrchestratorStatusChanged(object? sender, string status) => Dispatcher.Invoke(UpdateStatus);
     private void OnOrchestratorShotFired(object? sender, EventArgs e) => Dispatcher.Invoke(UpdateStatus);
+    private void OnClientConnectionChanged(object? sender, bool connected) => Dispatcher.Invoke(UpdateStatus);
 
     private void OnWindowClosed(object? sender, EventArgs e)
     {
         _orchestrator.StatusChanged -= OnOrchestratorStatusChanged;
         _orchestrator.ShotFired -= OnOrchestratorShotFired;
+        _orchestrator.ClientConnectionChanged -= OnClientConnectionChanged;
     }
 
     private void LoadSettingsToUI()
     {
         var settings = _orchestrator.Settings;
 
+        // Shot detection source
+        if (settings.DetectionSource == ShotDetectionSource.OpenConnect)
+            OpenConnectRadio.IsChecked = true;
+        else
+            FolderWatcherRadio.IsChecked = true;
+
         // Shots directory
         ShotsDirectoryTextBox.Text = settings.ShotsDirectoryPath;
+
+        // OpenConnect port
+        OpenConnectPortTextBox.Text = settings.OpenConnectPort.ToString();
 
         // Audio devices
         var devices = _orchestrator.AudioTrigger.GetAudioOutputDevices();
@@ -82,10 +95,34 @@ public partial class ConfigWindow : Window
         DurationSlider.Value = settings.ToneDurationMs;
     }
 
+    private void DetectionSource_Changed(object sender, RoutedEventArgs e)
+    {
+        UpdateDetectionVisibility();
+    }
+
+    private void UpdateDetectionVisibility()
+    {
+        if (ShotsDirectoryGroup == null || OpenConnectConfigGroup == null)
+            return;
+
+        ShotsDirectoryGroup.Visibility = FolderWatcherRadio.IsChecked == true ? Visibility.Visible : Visibility.Collapsed;
+        OpenConnectConfigGroup.Visibility = OpenConnectRadio.IsChecked == true ? Visibility.Visible : Visibility.Collapsed;
+    }
+
     private void UpdateStatus()
     {
         if (_orchestrator.IsRunning)
-            StatusText.Text = $"Monitoring: {_orchestrator.Settings.ShotsDirectoryPath}";
+        {
+            if (_orchestrator.Settings.DetectionSource == ShotDetectionSource.OpenConnect)
+            {
+                var port = _orchestrator.Settings.OpenConnectPort;
+                StatusText.Text = _orchestrator.IsClientConnected
+                    ? $"Connected — listening on port {port} (OpenConnect)"
+                    : $"Waiting for connection on port {port} (OpenConnect)";
+            }
+            else
+                StatusText.Text = $"Monitoring: {_orchestrator.Settings.ShotsDirectoryPath}";
+        }
         else
             StatusText.Text = "Not monitoring";
 
@@ -182,14 +219,28 @@ public partial class ConfigWindow : Window
     {
         var settings = _orchestrator.Settings;
 
-        // Validate shots directory
-        var shotsDir = ShotsDirectoryTextBox.Text.Trim();
-        if (string.IsNullOrEmpty(shotsDir))
+        // Detection source
+        if (OpenConnectRadio.IsChecked == true)
         {
-            MessageDialog.Show(this, "Validation Error", "Please enter a shots directory path.", MessageDialogType.Warning);
-            return;
+            if (!int.TryParse(OpenConnectPortTextBox.Text.Trim(), out int ocPort) || ocPort < 1 || ocPort > 65535)
+            {
+                MessageDialog.Show(this, "Validation Error", "Please enter a valid OpenConnect listen port (1-65535).", MessageDialogType.Warning);
+                return;
+            }
+            settings.DetectionSource = ShotDetectionSource.OpenConnect;
+            settings.OpenConnectPort = ocPort;
         }
-        settings.ShotsDirectoryPath = shotsDir;
+        else
+        {
+            var shotsDir = ShotsDirectoryTextBox.Text.Trim();
+            if (string.IsNullOrEmpty(shotsDir))
+            {
+                MessageDialog.Show(this, "Validation Error", "Please enter a shots directory path.", MessageDialogType.Warning);
+                return;
+            }
+            settings.DetectionSource = ShotDetectionSource.FolderWatcher;
+            settings.ShotsDirectoryPath = shotsDir;
+        }
 
         // Reset all trigger types
         settings.AudioTriggerEnabled = false;

@@ -3,6 +3,7 @@ namespace VxTrigger.Services;
 public class TriggerOrchestrator : IDisposable
 {
     private ShotFolderWatcher? _watcher;
+    private OpenConnectListenerService? _openConnectListener;
     private readonly AudioTriggerService _audioTrigger;
     private readonly NetworkTriggerService _networkTrigger;
     private TriggerSettings _settings;
@@ -14,11 +15,13 @@ public class TriggerOrchestrator : IDisposable
 
     public event EventHandler<string>? StatusChanged;
     public event EventHandler? ShotFired;
+    public event EventHandler<bool>? ClientConnectionChanged;
 
     public TriggerSettings Settings => _settings;
     public AudioTriggerService AudioTrigger => _audioTrigger;
     public NetworkTriggerService NetworkTrigger => _networkTrigger;
-    public bool IsRunning => _watcher?.IsRunning ?? false;
+    public bool IsRunning => (_watcher?.IsRunning ?? false) || (_openConnectListener?.IsRunning ?? false);
+    public bool IsClientConnected => _openConnectListener?.IsClientConnected ?? false;
     public int ShotCount { get; private set; }
     public DateTime? LastShotTime { get; private set; }
 
@@ -51,11 +54,23 @@ public class TriggerOrchestrator : IDisposable
     {
         Stop();
 
-        _watcher = new ShotFolderWatcher(_settings.ShotsDirectoryPath);
-        _watcher.ShotDetected += OnShotDetected;
-        _watcher.StatusChanged += (_, status) => StatusChanged?.Invoke(this, status);
-        _watcher.Error += (_, error) => StatusChanged?.Invoke(this, $"Error: {error}");
-        _watcher.Start();
+        if (_settings.DetectionSource == ShotDetectionSource.OpenConnect)
+        {
+            _openConnectListener = new OpenConnectListenerService { Port = _settings.OpenConnectPort };
+            _openConnectListener.ShotDetected += OnShotDetected;
+            _openConnectListener.StatusChanged += (_, status) => StatusChanged?.Invoke(this, status);
+            _openConnectListener.ClientConnectionChanged += (_, connected) => ClientConnectionChanged?.Invoke(this, connected);
+            _openConnectListener.Error += (_, error) => StatusChanged?.Invoke(this, $"Error: {error}");
+            _openConnectListener.Start();
+        }
+        else
+        {
+            _watcher = new ShotFolderWatcher(_settings.ShotsDirectoryPath);
+            _watcher.ShotDetected += OnShotDetected;
+            _watcher.StatusChanged += (_, status) => StatusChanged?.Invoke(this, status);
+            _watcher.Error += (_, error) => StatusChanged?.Invoke(this, $"Error: {error}");
+            _watcher.Start();
+        }
     }
 
     public void Stop()
@@ -65,8 +80,16 @@ public class TriggerOrchestrator : IDisposable
             _watcher.ShotDetected -= OnShotDetected;
             _watcher.Dispose();
             _watcher = null;
-            StatusChanged?.Invoke(this, "Stopped");
         }
+
+        if (_openConnectListener != null)
+        {
+            _openConnectListener.ShotDetected -= OnShotDetected;
+            _openConnectListener.Dispose();
+            _openConnectListener = null;
+        }
+
+        StatusChanged?.Invoke(this, "Stopped");
     }
 
     public void SaveSettings()
@@ -108,6 +131,7 @@ public class TriggerOrchestrator : IDisposable
         Stop();
         _audioTrigger.Dispose();
         _networkTrigger.Dispose();
+        _openConnectListener?.Dispose();
         _disposed = true;
     }
 }

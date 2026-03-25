@@ -1,10 +1,15 @@
 # vx-trigger
 
-A lightweight Windows system tray application that monitors ProTee Labs shot data and fires triggers to notify swing recording software when a shot is detected.
+A lightweight Windows system tray application that fires triggers to notify swing recording software when a shot is detected. Compatability with golf simulator software that supports the GSPro OpenConnect API or ProTee Labs using log file monitoring.
 
 ## How It Works
 
-ProTee Labs writes a timestamped subdirectory to `%APPDATA%\Roaming\ProTeeUnited\Shots` for each shot. vx-trigger watches that directory using a `FileSystemWatcher` and fires a configured trigger the moment a new shot folder appears.
+vx-trigger detects shots from ProTee Labs using one of two methods:
+
+- **Folder Watcher** — Monitors `%APPDATA%\Roaming\ProTeeUnited\Shots` for new shot directories created by ProTee Labs.
+- **OpenConnect Listener** — Listens on a TCP port (default 921) for shot data sent directly from ProTee Labs via the OpenConnect protocol. This method can offer faster shot detection since data arrives over the network before it is written to disk. Do not use this mode alongside GSPro or Infinite Tees, as only one application can listen on the OpenConnect port at a time.
+
+When a shot is detected, vx-trigger fires a configured trigger to notify swing recording software.
 
 ## Trigger Types
 
@@ -32,15 +37,18 @@ The app will open the configuration window on first launch if no trigger has bee
 
 1. Run `vx-trigger.exe` — a colored circle appears in the system tray
 2. Double-click the tray icon (or right-click → **Configure...**) to open settings
-3. Set the **Shots directory** (default: `%APPDATA%\Roaming\ProTeeUnited\Shots`)
+3. Choose a **shot detection** method:
+   - **Folder Watcher** — set the shots directory (default: `%APPDATA%\Roaming\ProTeeUnited\Shots`)
+   - **OpenConnect Listener** — set the listen port (default: 921). Configure ProTee Labs to send to this port.
 4. Choose a trigger type and configure it, then click **Save**
-5. The tray icon turns green when monitoring is active
+5. The tray icon color reflects the current state (see below)
 
 ### Tray Icon Colors
 
 | Color | Meaning |
 |-------|---------|
-| Green | Actively monitoring |
+| Green | Actively monitoring (Folder Watcher) or ProTee Labs connected (OpenConnect) |
+| Orange | OpenConnect listener running, waiting for ProTee Labs to connect |
 | Yellow | Configured but stopped |
 | Gray | Not configured |
 

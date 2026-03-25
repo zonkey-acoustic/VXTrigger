@@ -6,7 +6,7 @@
         Height="750" Width="500"
         WindowStartupLocation="CenterScreen"
         SizeToContent="Height"
-        MinHeight="400" MaxHeight="900"
+        MinHeight="400" MaxHeight="1100"
         Style="{StaticResource MaterialDesignWindow}"
         Background="{DynamicResource MaterialDesignPaper}"
         TextElement.Foreground="{DynamicResource MaterialDesignBody}"
@@ -14,15 +14,17 @@
         TextElement.FontSize="14"
         FontFamily="{materialDesign:MaterialDesignFont}">
 
+    <ScrollViewer VerticalScrollBarVisibility="Auto">
     <Grid Margin="24">
         <Grid.RowDefinitions>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="*"/>
-            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>  <!-- 0: Header -->
+            <RowDefinition Height="Auto"/>  <!-- 1: Shot Detection source -->
+            <RowDefinition Height="Auto"/>  <!-- 2: Detection config (folder/openconnect) -->
+            <RowDefinition Height="Auto"/>  <!-- 3: Trigger Type -->
+            <RowDefinition Height="Auto"/>  <!-- 4: Trigger config (audio/network) -->
+            <RowDefinition Height="Auto"/>  <!-- 5: Status -->
+            <RowDefinition Height="*"/>     <!-- 6: Info -->
+            <RowDefinition Height="Auto"/>  <!-- 7: Buttons -->
         </Grid.RowDefinitions>
 
         <!-- Header -->
@@ -31,8 +33,28 @@
                    Style="{StaticResource MaterialDesignHeadline6TextBlock}"
                    Margin="0,0,0,16"/>
 
-        <!-- Shots Directory -->
+        <!-- Shot Detection Source -->
         <GroupBox Grid.Row="1"
+                  Header="Shot Detection"
+                  Style="{StaticResource MaterialDesignCardGroupBox}"
+                  Margin="0,0,0,16">
+            <StackPanel Margin="8">
+                <RadioButton x:Name="FolderWatcherRadio"
+                             Content="Folder Watcher (monitor ProTee Shots directory)"
+                             Style="{StaticResource MaterialDesignRadioButton}"
+                             IsChecked="True"
+                             Checked="DetectionSource_Changed"
+                             Margin="0,0,0,8"/>
+                <RadioButton x:Name="OpenConnectRadio"
+                             Content="OpenConnect Listener (receive shots via TCP)"
+                             Style="{StaticResource MaterialDesignRadioButton}"
+                             Checked="DetectionSource_Changed"/>
+            </StackPanel>
+        </GroupBox>
+
+        <!-- Shots Directory (FolderWatcher mode) -->
+        <GroupBox x:Name="ShotsDirectoryGroup"
+                  Grid.Row="2"
                   Header="Shots Directory"
                   Style="{StaticResource MaterialDesignCardGroupBox}"
                   Margin="0,0,0,16">
@@ -60,8 +82,28 @@
             </StackPanel>
         </GroupBox>
 
+        <!-- OpenConnect Listener (OpenConnect mode) -->
+        <GroupBox x:Name="OpenConnectConfigGroup"
+                  Grid.Row="2"
+                  Header="OpenConnect Listener"
+                  Style="{StaticResource MaterialDesignCardGroupBox}"
+                  Visibility="Collapsed"
+                  Margin="0,0,0,16">
+            <StackPanel Margin="8">
+                <TextBox x:Name="OpenConnectPortTextBox"
+                         materialDesign:HintAssist.Hint="Listen Port (default: 921)"
+                         Style="{StaticResource MaterialDesignOutlinedTextBox}"
+                         PreviewTextInput="PortTextBox_PreviewTextInput"/>
+                <TextBlock Text="Listens for shot data from ProTee Labs via the OpenConnect protocol. ProTee Labs must be configured to send to this port. Do not use alongside GSPro or Infinite Tees."
+                           Style="{StaticResource MaterialDesignCaptionTextBlock}"
+                           TextWrapping="Wrap"
+                           Opacity="0.7"
+                           Margin="0,4,0,0"/>
+            </StackPanel>
+        </GroupBox>
+
         <!-- Trigger Type Selection -->
-        <GroupBox Grid.Row="2"
+        <GroupBox Grid.Row="3"
                   Header="Trigger Type"
                   Style="{StaticResource MaterialDesignCardGroupBox}"
                   Margin="0,0,0,16">
@@ -81,7 +123,7 @@
 
         <!-- Audio Configuration -->
         <GroupBox x:Name="AudioConfigGroup"
-                  Grid.Row="3"
+                  Grid.Row="4"
                   Header="Audio Settings"
                   Style="{StaticResource MaterialDesignCardGroupBox}"
                   Margin="0,0,0,16">
@@ -184,7 +226,7 @@
 
         <!-- Network Configuration -->
         <GroupBox x:Name="NetworkConfigGroup"
-                  Grid.Row="3"
+                  Grid.Row="4"
                   Header="Network Settings"
                   Style="{StaticResource MaterialDesignCardGroupBox}"
                   Visibility="Collapsed"
@@ -222,7 +264,7 @@
         </GroupBox>
 
         <!-- Status -->
-        <GroupBox Grid.Row="4"
+        <GroupBox Grid.Row="5"
                   Header="Status"
                   Style="{StaticResource MaterialDesignCardGroupBox}"
                   Margin="0,0,0,16">
@@ -239,16 +281,16 @@
         </GroupBox>
 
         <!-- Info -->
-        <TextBlock Grid.Row="5"
+        <TextBlock Grid.Row="6"
                    TextWrapping="Wrap"
                    Opacity="0.7"
                    VerticalAlignment="Top"
                    Margin="0,0,0,16">
-            <Run Text="Monitors the ProTee Shots directory and fires triggers when new shots are detected. The app runs in the system tray." FontStyle="Italic"/>
+            <Run Text="Detects ProTee shots via folder monitoring or OpenConnect protocol and fires triggers to notify swing recording software. The app runs in the system tray." FontStyle="Italic"/>
         </TextBlock>
 
         <!-- Action Buttons -->
-        <StackPanel Grid.Row="6"
+        <StackPanel Grid.Row="7"
                     Orientation="Horizontal"
                     HorizontalAlignment="Right">
             <Button Content="Save"
@@ -260,4 +302,5 @@
                     Style="{StaticResource MaterialDesignOutlinedButton}"/>
         </StackPanel>
     </Grid>
+    </ScrollViewer>
 </Window>

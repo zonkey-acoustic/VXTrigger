@@ -3,12 +3,24 @@ using System.Text.Json;
 
 namespace VxTrigger.Services;
 
+public enum ShotDetectionSource
+{
+    FolderWatcher,
+    OpenConnect
+}
+
 public class TriggerSettings
 {
-    // Shots directory to monitor
+    // Shot detection source
+    public ShotDetectionSource DetectionSource { get; set; } = ShotDetectionSource.FolderWatcher;
+
+    // Shots directory to monitor (FolderWatcher mode)
     public string ShotsDirectoryPath { get; set; } = Path.Combine(
         Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData),
         "ProTeeUnited", "Shots");
+
+    // OpenConnect listener port
+    public int OpenConnectPort { get; set; } = 921;
 
     // Audio trigger
     public bool AudioTriggerEnabled { get; set; }
